@@ -22,7 +22,15 @@ class Preprocessor:
         file_txt = open(path, 'r').read()
         match = re.search(r'#include <(.*)>', file_txt)
         if match:
-            pass
+            lib_name = re.search(r'(.*)\..*',match.group(1))
+            if not lib_name:
+                lib_name = match.group(1)
+            if not os.path.isfile(os.path.join('..', 'libraries', lib_name, '.json')):
+                raise PreprocessError(f'{lib_name} doesn\'t exist in libraries')
+            else:
+                with (open(os.path.join('..', 'libraries', lib_name, '.json'), 'r') as lk,
+                      open('data/coreKeywords.json') as ck):
+                    pass
 
 
 
