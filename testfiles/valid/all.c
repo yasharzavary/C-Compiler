@@ -1,5 +1,6 @@
-#include <stdio.h>
-
+//#include <stdio.h>
+#include <stdlib.h>
+#include <ali.h>
 
 char valid(){
     string itisvalid = 4;
