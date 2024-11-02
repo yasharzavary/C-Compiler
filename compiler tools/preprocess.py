@@ -21,13 +21,13 @@ class Preprocessor:
 
     def comment_clear(self):
         temp = self.__codeText
-        comments = re.findall(r'/{2}.*\n', temp)+ ['second'] + re.findall(r'(?<=[^\"])/\*.*?\*/', temp, re.DOTALL)+ ['third'] + re.findall(r'^/\*.*?\*/', temp, re.DOTALL)
+        # find comment patterns in the code
+        comments = re.findall(r'/{2}.*\n', temp) + ['second'] + re.findall(r'(?<=[^\"])/\*.*?\*/', temp, re.DOTALL) + ['third'] + re.findall(r'^/\*.*?\*/', temp, re.DOTALL)
         print(comments)
         for comment in comments:
             temp = temp.replace(comment, '')
 
         self.__codeText = temp
-        print(temp)
 
 
     def read_libraries(self, path):
