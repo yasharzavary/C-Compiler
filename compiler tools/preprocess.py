@@ -15,30 +15,49 @@ class PreprocessError(Exception):
 
 
 class Preprocessor:
-    def __init__(self):
-        pass
+    def __init__(self, path):
+        self.__codeText = open(path, 'r').read()
+
+
+    def comment_clear(self):
+        temp = self.__codeText
+        comments = re.findall(r'/{2}.*\n', temp)+ ['second'] + re.findall(r'(?<=[^\"])/\*.*?\*/', temp, re.DOTALL)+ ['third'] + re.findall(r'^/\*.*?\*/', temp, re.DOTALL)
+        print(comments)
+        for comment in comments:
+            temp = temp.replace(comment, '')
+
+        self.__codeText = temp
+        print(temp)
 
 
     def read_libraries(self, path):
         file_txt = open(path, 'r').read().split('\n')
-        print(file_txt)
-        match = [find[0] for find in [re.findall(r'^\s*#include\s*<(.*)>\s*', line) for line in file_txt] if find]
+        # if re.search(r'')
+        match = [find[0] for find in [re.findall(r'#include\s*<(.*)>\s*', line) for line in file_txt] if find]
         if match:
-            lib_names = [re.findall(r'(.*)\..*', name)[0] for name in match]
-            if not lib_names:
-                lib_name = match.group(1)
-            if not os.path.isfile(os.path.join('..', 'libraries', lib_name, '.json')):
-                raise PreprocessError(f'{lib_name} doesn\'t exist in libraries')
+            lib_names = list()
+            for name in match:
+                if not re.search('.h', name):
+                    pass
+
+            lib_names = [
+                re.findall(r'(.*)\..*', name)[0] if re.findall(r'(.*)\..*', name) else (_ for _ in ()).throw(
+                    PreprocessError(f'undefinded library {name}'))
+                for name in match
+            ]
+            print(lib_names)
+            if not os.path.isfile(os.path.join('..', 'libraries', lib_names, '.json')):
+                raise PreprocessError(f'{lib_names} doesn\'t exist in libraries')
             else:
-                with (open(os.path.join('..', 'libraries', lib_name, '.json'), 'r') as lk,
+                with (open(os.path.join('..', 'libraries', lib_names, '.json'), 'r') as lk,
                       open('data/coreKeywords.json') as ck):
                     l_keywords = json.load(lk)
                     c_keywords = json.load(ck)
 
 
 if __name__ == '__main__':
-    p = Preprocessor()
-    p.read_libraries(os.path.join('..', 'testfiles', 'valid', 'all.c'))
+    p = Preprocessor(os.path.join('..', 'testfiles', 'valid', 'all.c'))
+    p.comment_clear()
 
 
 
