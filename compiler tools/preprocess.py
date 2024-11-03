@@ -45,8 +45,9 @@ class Preprocessor:
             else:
                 keyword_temp += json.load(open(library_file_address + lib + '.json'))['keywords']
 
-        finalKeywordList = keyword_temp + coreKeywords  # list of keywords.
-        print(finalKeywordList)
+        finalKeywordList = {'keywords':keyword_temp + coreKeywords}  # list of keywords.
+        with open('data/finalKeywords.json', 'w') as outfile:
+            json.dump(finalKeywordList, outfile, indent=6)
 
 if __name__ == '__main__':
     p = Preprocessor(os.path.join('..', 'testfiles', 'valid', 'all.c'))
