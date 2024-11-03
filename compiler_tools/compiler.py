@@ -66,6 +66,8 @@ class Compiler:
                 self.__SYMBOL_TABLE['Type'].append('string_constant')
                 self.__SYMBOL_TABLE['Token'].append(f'<STR_TK>')
             elif temp[0] == "'" or temp[-1] == "'":
+                if len(temp.replace("'", '')) != 1:
+                    raise CompilerErorr(f"Invalid character len at {temp}")
                 self.__SYMBOL_TABLE['Code'].append(temp)
                 self.__SYMBOL_TABLE['Type'].append('char_constant')
                 self.__SYMBOL_TABLE['Token'].append(f'<CHAR_TK>')
@@ -89,7 +91,7 @@ class Compiler:
                 self.__SYMBOL_TABLE['Code'].append(temp)
                 self.__SYMBOL_TABLE['Type'].append('integer')
                 self.__SYMBOL_TABLE['Token'].append('<INT_CONST>')
-            elif re.search(r'^[^0-9].+', temp) and not re.search(r'[^a-zA-Z0-9]', temp):
+            elif re.search(r'^[^0-9].*', temp) and not re.search(r'[^a-zA-Z0-9]', temp):
                 self.__SYMBOL_TABLE['Code'].append(temp)
                 self.__SYMBOL_TABLE['Type'].append('identifier')
                 if temp in self.id_dict.keys():
@@ -102,7 +104,6 @@ class Compiler:
                 raise CompilerErorr(f'Unrecognized identifier: {temp}')
 
         codetxt = self.source_code
-        print(codetxt)
 
         control = None
         temp = ''
@@ -123,17 +124,13 @@ class Compiler:
                 adder(temp)
                 adder(i)
                 temp = ''
-            elif i == '\n':  # enter control
-                if temp:
-                    pass
-                else: continue
-            elif i == ' ':  # space control
+            elif i in ['\n', ' ']:  # enter control
                 adder(temp)
                 temp = ''
-
             else:
                 temp += i
 
+        adder(temp)
         pd.DataFrame(self.__SYMBOL_TABLE).to_excel('final.xlsx', index=False)
 
 

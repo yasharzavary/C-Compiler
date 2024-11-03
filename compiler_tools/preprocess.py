@@ -26,9 +26,11 @@ class Preprocessor:
     def __comment_clear(self):
         temp = self.__codeText
         # find comment patterns in the code
-        comments = re.findall(r'/{2}.*\n', temp) + ['second'] + re.findall(r'(?<=[^\"])/\*.*?\*/',
+        comments = re.findall(r'/{2}.*\n',
+                              temp) + ['second'] + re.findall(r'(?<=[^\"])/\*.*?\*/',
                                                                            temp, re.DOTALL) + ['third'] + re.findall(r'^/\*.*?\*/',
-                                                                                                                     temp, re.DOTALL)
+                                                                                                                     temp, re.DOTALL) + re.findall(r'/{2}.*$',
+                                                                                                                                                   temp)
         for comment in comments:
             temp = temp.replace(comment, '')
 
