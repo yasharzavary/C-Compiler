@@ -1,6 +1,6 @@
-//#include <stdio.h>
-#include <stdlib.h>
-#include <ali.h>
+#include <stdio.h>
+//#include <stdlib.h>
+//#include <ali.h>
 //#include<hello>
 //hello, this i scomment
 
