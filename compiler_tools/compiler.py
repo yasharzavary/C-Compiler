@@ -30,6 +30,24 @@ class Compiler:
         codetxt = self.source_code
         print(codetxt)
 
+        control = None
+        temp = ''
+        for i in codetxt:
+            if i == '\n':
+                if temp:
+                    pass
+                else: continue
+
+            elif i == ' ':
+                if control in ['S', 'C']:  # it is a char or string
+                    pass
+                else:
+                    continue
+            else:
+                temp += i
+
+
+
 
 
 

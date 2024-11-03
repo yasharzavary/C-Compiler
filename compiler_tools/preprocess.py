@@ -38,17 +38,33 @@ class Preprocessor:
     def __read_libraries(self):
         file_txt = self.__codeText
         libraries = list(re.findall(r'#include\s*<(.*).h>\s*', file_txt))
-        coreKeywords = json.load(open('compiler_tools/data/coreKeywords.json', 'r'))['keywords']  # read list of keywords.
+        jsonfile = json.load(open('compiler_tools/data/coreKeywords.json', 'r'))
+        coreKeywords = jsonfile['keywords']  # read list of keywords.
+        tokens = jsonfile['TOKENS']  # read list of keywords.
         keyword_temp = list()
+        token_temp = list()
         library_file_address = 'libraries/'
 
+        # loop on each library
         for lib in libraries:
+            # check, if exist, add them to core keywords.
             if not os.path.exists(library_file_address + lib + '.json'):
                 raise PreprocessError(f'{lib} doesn\'t exist')
             else:
-                keyword_temp += json.load(open(library_file_address + lib + '.json'))['keywords']
+                temp = json.load(open(library_file_address + lib + '.json'))
+                keyword_temp += temp['keywords']
+                token_temp += temp['TOKENS']
 
-        finalKeywordList = {'keywords':keyword_temp + coreKeywords}  # list of keywords.
+
+        # delete all include<library> parts
+        for full_lib in re.findall(r'#include.*?\n', self.__codeText):
+            self.__codeText = self.__codeText.replace(full_lib, '')
+
+
+        finalKeywordList = {
+            'keywords': coreKeywords + keyword_temp,
+            'TOKENS': tokens + token_temp
+        }  # list of keywords.
         with open('compiler_tools/data/finalKeywords.json', 'w') as outfile:
             json.dump(finalKeywordList, outfile, indent=6)
 

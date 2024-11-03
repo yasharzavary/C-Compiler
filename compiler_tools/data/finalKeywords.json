@@ -1,6 +1,5 @@
 {
       "keywords": [
-            "printf",
             "if",
             "while",
             "main",
@@ -8,6 +7,18 @@
             "float",
             "char",
             "return",
-            "string"
+            "string",
+            "printf"
+      ],
+      "TOKENS": [
+            "IF_TK",
+            "WHILE_TK",
+            "MAIN_TK",
+            "INT_TK",
+            "FLOAT_TK",
+            "CHAR_TK",
+            "RETURN_TK",
+            "STRING_TK",
+            "PRINTF_TK"
       ]
 }

@@ -1,5 +1,8 @@
 {
   "keywords":[
     "printf"
+  ],
+  "TOKENS": [
+    "PRINTF_TK"
   ]
 }

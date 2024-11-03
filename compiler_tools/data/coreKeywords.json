@@ -8,5 +8,15 @@
     "char",
     "return",
     "string"
+  ],
+  "TOKENS": [
+    "IF_TK",
+    "WHILE_TK",
+    "MAIN_TK",
+    "INT_TK",
+    "FLOAT_TK",
+    "CHAR_TK",
+    "RETURN_TK",
+    "STRING_TK"
   ]
 }
