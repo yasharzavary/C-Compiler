@@ -1,6 +1,7 @@
 import os
 import json
 import pandas as pd
+import re
 
 # error class
 class CompilerErorr(Exception):
@@ -14,6 +15,10 @@ class CompilerErorr(Exception):
 
 class Compiler:
     def __init__(self, clean_text):
+        self.id_num = 1
+        self.id_dict = {
+
+        }
         self.symbols = {
             ';': '<SEMICOLON_TK>',
             '(': '<PHARANTESES1_TK>',
@@ -59,11 +64,11 @@ class Compiler:
             if temp[0] == '"' or temp[-1] == '"':
                 self.__SYMBOL_TABLE['Code'].append(temp)
                 self.__SYMBOL_TABLE['Type'].append('string_constant')
-                self.__SYMBOL_TABLE['Token'].append(f'<STR_TK, {temp}>')
+                self.__SYMBOL_TABLE['Token'].append(f'<STR_TK>')
             elif temp[0] == "'" or temp[-1] == "'":
                 self.__SYMBOL_TABLE['Code'].append(temp)
                 self.__SYMBOL_TABLE['Type'].append('char_constant')
-                self.__SYMBOL_TABLE['Token'].append(f'<CHAR_TK, {temp}>')
+                self.__SYMBOL_TABLE['Token'].append(f'<CHAR_TK>')
             elif temp in self.keywords:
                 self.__SYMBOL_TABLE['Code'].append(temp)
                 self.__SYMBOL_TABLE['Type'].append('keyword')
@@ -72,6 +77,29 @@ class Compiler:
                 self.__SYMBOL_TABLE['Code'].append(temp)
                 self.__SYMBOL_TABLE['Type'].append('symbol')
                 self.__SYMBOL_TABLE['Token'].append(self.symbols[temp])
+            elif temp in self.operators:
+                self.__SYMBOL_TABLE['Code'].append(temp)
+                self.__SYMBOL_TABLE['Type'].append('operators')
+                self.__SYMBOL_TABLE['Token'].append(self.operators[temp])
+            elif re.search(r'\d+\.\d+', temp) and not re.search(r'[^0-9\.]', temp):
+                self.__SYMBOL_TABLE['Code'].append(temp)
+                self.__SYMBOL_TABLE['Type'].append('float')
+                self.__SYMBOL_TABLE['Token'].append('<FLOAT_CONST>')
+            elif re.search(r'\d+', temp) and not re.search(r'[^0-9]', temp):
+                self.__SYMBOL_TABLE['Code'].append(temp)
+                self.__SYMBOL_TABLE['Type'].append('integer')
+                self.__SYMBOL_TABLE['Token'].append('<INT_CONST>')
+            elif re.search(r'^[^0-9].+', temp) and not re.search(r'[^a-zA-Z0-9]', temp):
+                self.__SYMBOL_TABLE['Code'].append(temp)
+                self.__SYMBOL_TABLE['Type'].append('identifier')
+                if temp in self.id_dict.keys():
+                    self.__SYMBOL_TABLE['Token'].append(f'<ID_TK, {self.id_dict[temp]}>')
+                else:
+                    self.__SYMBOL_TABLE['Token'].append(f'<ID_TK, {self.id_num}>')
+                    self.id_dict[temp] = self.id_num
+                    self.id_num += 1
+            else:
+                raise CompilerErorr(f'Unrecognized identifier: {temp}')
 
         codetxt = self.source_code
         print(codetxt)
@@ -89,7 +117,9 @@ class Compiler:
                 if control == 'S': continue
                 elif control == 'C': control = ''
                 else: control = 'C'
-            elif i in self.symbols.keys():
+            elif control:
+                temp += i
+            elif i in self.symbols.keys() or i in self.operators.keys():
                 adder(temp)
                 adder(i)
                 temp = ''
@@ -98,19 +128,14 @@ class Compiler:
                     pass
                 else: continue
             elif i == ' ':  # space control
-                if control in ['S', 'C']:  # it is a char or string
-                    temp += i
-                elif temp:
-                    print(f"-{temp}-")
-                    adder(temp)
-                    temp = ''
+                adder(temp)
+                temp = ''
 
-                else:
-                    continue
             else:
                 temp += i
 
         pd.DataFrame(self.__SYMBOL_TABLE).to_excel('final.xlsx', index=False)
+
 
 
 

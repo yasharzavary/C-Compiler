@@ -1,7 +1,7 @@
 from CMake import CMakeClass
 
 
-x = CMakeClass('testfiles/valid/all.c')
+x = CMakeClass('testfiles/invalid/Invalid Identifier.c')
 x.build()
 
 
