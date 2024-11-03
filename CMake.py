@@ -8,3 +8,4 @@ class CMakeClass:
 
     def build(self):
         self.__preprocess_text = Preprocessor(self.__codePath)
+
