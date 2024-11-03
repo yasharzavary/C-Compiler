@@ -1,5 +1,6 @@
 import os
-import  json
+import json
+import pandas as pd
 
 # error class
 class CompilerErorr(Exception):
@@ -14,8 +15,8 @@ class CompilerErorr(Exception):
 class Compiler:
     def __init__(self, clean_text):
         self.symbols = {
-            ';':'<SEMICOLON_TK>',
-            '(':'<PHARANTESES1_TK>',
+            ';': '<SEMICOLON_TK>',
+            '(': '<PHARANTESES1_TK>',
             ')': '<PHARANTESES2_TK>',
             '{': '<BRACKET1_TK>',
             '}': '<BRACKET2_TK>',
@@ -53,8 +54,26 @@ class Compiler:
         main function to analyze lexically and send to next phase.
         :return: result of analyze
         """
-        codetxt = self.source_code
+        def adder(temp):
+            if not temp: return
+            if temp[0] == '"' or temp[-1] == '"':
+                self.__SYMBOL_TABLE['Code'].append(temp)
+                self.__SYMBOL_TABLE['Type'].append('string_constant')
+                self.__SYMBOL_TABLE['Token'].append(f'<STR_TK, {temp}>')
+            elif temp[0] == "'" or temp[-1] == "'":
+                self.__SYMBOL_TABLE['Code'].append(temp)
+                self.__SYMBOL_TABLE['Type'].append('char_constant')
+                self.__SYMBOL_TABLE['Token'].append(f'<CHAR_TK, {temp}>')
+            elif temp in self.keywords:
+                self.__SYMBOL_TABLE['Code'].append(temp)
+                self.__SYMBOL_TABLE['Type'].append('keyword')
+                self.__SYMBOL_TABLE['Token'].append(f'<{self.tokens[self.keywords.index(temp)]}>')
+            elif temp in self.symbols:
+                self.__SYMBOL_TABLE['Code'].append(temp)
+                self.__SYMBOL_TABLE['Type'].append('symbol')
+                self.__SYMBOL_TABLE['Token'].append(self.symbols[temp])
 
+        codetxt = self.source_code
         print(codetxt)
 
         control = None
@@ -71,9 +90,9 @@ class Compiler:
                 elif control == 'C': control = ''
                 else: control = 'C'
             elif i in self.symbols.keys():
-                pass
-
-
+                adder(temp)
+                adder(i)
+                temp = ''
             elif i == '\n':  # enter control
                 if temp:
                     pass
@@ -83,19 +102,7 @@ class Compiler:
                     temp += i
                 elif temp:
                     print(f"-{temp}-")
-                    if temp[0] == '"' or temp[-1] == '"':
-                        self.__SYMBOL_TABLE['code'].append(temp)
-                        self.__SYMBOL_TABLE['Type'].append('string_constant')
-                        self.__SYMBOL_TABLE['Token'].append(f'<STR_TK, {temp}>')
-                    elif temp[0] == "'" or temp[-1] == "'":
-                        self.__SYMBOL_TABLE['code'].append(temp)
-                        self.__SYMBOL_TABLE['Type'].append('char_constant')
-                        self.__SYMBOL_TABLE['Token'].append(f'<CHAR_TK, {temp}>')
-                    elif temp in self.keywords:
-                        self.__SYMBOL_TABLE['Code'].append(temp)
-                        self.__SYMBOL_TABLE['Type'].append('keyword')
-                        self.__SYMBOL_TABLE['Token'].append(f'<{self.tokens[self.keywords.index(temp)]}>')
-
+                    adder(temp)
                     temp = ''
 
                 else:
@@ -103,7 +110,7 @@ class Compiler:
             else:
                 temp += i
 
-        print(self.__SYMBOL_TABLE)
+        pd.DataFrame(self.__SYMBOL_TABLE).to_excel('final.xlsx', index=False)
 
 
 
