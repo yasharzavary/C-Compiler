@@ -13,6 +13,29 @@ class CompilerErorr(Exception):
 
 class Compiler:
     def __init__(self, clean_text):
+        self.symbols = {
+            ';':'<SEMICOLON_TK>',
+            '(':'<PHARANTESES1_TK>',
+            ')': '<PHARANTESES2_TK>',
+            '{': '<BRACKET1_TK>',
+            '}': '<BRACKET2_TK>',
+        }
+
+        self.operators = {
+            '+': '<SUM_TK>',
+            '-': '<SUB_TK>',
+            '/': '<DIV_TK>',
+            '*': '<MUL_TK>',
+            '==': '<EQ_TK>',
+            '>': '<BIG_TK>',
+            '>=': '<BIGEQ_TK>',
+            '<=': '<LOWEQ_TK>',
+            '<': '<LOW_TK>',
+            '++': '<INCREASE_TK>',
+            '--': '<DECREASE_TK>',
+            '=': '<ASIGN_TK>',
+        }
+
         self.__SYMBOL_TABLE = {
             'Code': list(),
             'Type': list(),
@@ -39,12 +62,18 @@ class Compiler:
         for i in codetxt:
             if i == '"':  # string control
                 temp += i
-                if control == 'S':control = ''
+                if control == 'C': continue
+                elif control == 'S':control = ''
                 else: control = 'S'
             elif i == "'":  # char control
                 temp += i
-                if control == 'C': control = ''
+                if control == 'S': continue
+                elif control == 'C': control = ''
                 else: control = 'C'
+            elif i in self.symbols.keys():
+                pass
+
+
             elif i == '\n':  # enter control
                 if temp:
                     pass
