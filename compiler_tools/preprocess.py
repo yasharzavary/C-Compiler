@@ -18,8 +18,12 @@ class Preprocessor:
     def __init__(self, path):
         self.__codeText = open(path, 'r').read()
 
+    def build(self):
+        self.__comment_clear()
+        self.__read_libraries()
+        return self.__codeText
 
-    def comment_clear(self):
+    def __comment_clear(self):
         temp = self.__codeText
         # find comment patterns in the code
         comments = re.findall(r'/{2}.*\n', temp) + ['second'] + re.findall(r'(?<=[^\"])/\*.*?\*/',
@@ -31,13 +35,12 @@ class Preprocessor:
         self.__codeText = temp
 
 
-    def read_libraries(self):
+    def __read_libraries(self):
         file_txt = self.__codeText
-        print(file_txt)
         libraries = list(re.findall(r'#include\s*<(.*).h>\s*', file_txt))
-        coreKeywords = json.load(open('data/coreKeywords.json', 'r'))['keywords']  # read list of keywords.
+        coreKeywords = json.load(open('compiler_tools/data/coreKeywords.json', 'r'))['keywords']  # read list of keywords.
         keyword_temp = list()
-        library_file_address = os.path.join('..', 'libraries') + '/'
+        library_file_address = 'libraries/'
 
         for lib in libraries:
             if not os.path.exists(library_file_address + lib + '.json'):
@@ -46,13 +49,10 @@ class Preprocessor:
                 keyword_temp += json.load(open(library_file_address + lib + '.json'))['keywords']
 
         finalKeywordList = {'keywords':keyword_temp + coreKeywords}  # list of keywords.
-        with open('data/finalKeywords.json', 'w') as outfile:
+        with open('compiler_tools/data/finalKeywords.json', 'w') as outfile:
             json.dump(finalKeywordList, outfile, indent=6)
 
-if __name__ == '__main__':
-    p = Preprocessor(os.path.join('..', 'testfiles', 'valid', 'all.c'))
-    p.comment_clear()
-    p.read_libraries()
+
 
 
 

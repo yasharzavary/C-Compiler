@@ -4,9 +4,9 @@
 //#include<hello>
 //hello, this i scomment
 
-    /*
-salam salammm
-*/
+       /*
+salam dasgrsalammmsgarht
+    */
 char valid(){
     string itisvalid = 4;
     printf("again it is valid")

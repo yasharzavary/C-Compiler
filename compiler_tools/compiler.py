@@ -19,13 +19,16 @@ class Compiler:
         }
         self.source_code = clean_text
 
+    def build(self):
+        self.__lexical_analysis()
 
     def __lexical_analysis(self):
         """
         main function to analyze lexically and send to next phase.
         :return: result of analyze
         """
-        pass
+        codetxt = self.source_code
+        print(codetxt)
 
 
 
