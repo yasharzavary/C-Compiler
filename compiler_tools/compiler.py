@@ -131,7 +131,7 @@ class Compiler:
                 temp += i
 
         adder(temp)
-        pd.DataFrame(self.__SYMBOL_TABLE).to_excel('~/Desktop/final.xlsx', index=False)
+        pd.DataFrame(self.__SYMBOL_TABLE).to_excel('final.xlsx', index=False)
 
 
 
