@@ -1,7 +1,7 @@
 
 ---
 
-# C Compiler Project
+# C Compiler writed with python
 
 ## Overview
 
