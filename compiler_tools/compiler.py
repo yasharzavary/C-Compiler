@@ -91,7 +91,7 @@ class Compiler:
                 self.__SYMBOL_TABLE['Code'].append(temp)
                 self.__SYMBOL_TABLE['Type'].append('integer')
                 self.__SYMBOL_TABLE['Token'].append('<INT_CONST>')
-            elif re.search(r'^[^0-9].*', temp) and not re.search(r'[^a-zA-Z0-9]', temp):
+            elif (re.search(r'^[^0-9].*', temp) or re.search(r'^_.*', temp)) and not re.search(r'[^a-zA-Z0-9_]', temp):
                 self.__SYMBOL_TABLE['Code'].append(temp)
                 self.__SYMBOL_TABLE['Type'].append('identifier')
                 if temp in self.id_dict.keys():
@@ -131,7 +131,7 @@ class Compiler:
                 temp += i
 
         adder(temp)
-        pd.DataFrame(self.__SYMBOL_TABLE).to_excel('final.xlsx', index=False)
+        pd.DataFrame(self.__SYMBOL_TABLE).to_excel('~/Desktop/final.xlsx', index=False)
 
 
 

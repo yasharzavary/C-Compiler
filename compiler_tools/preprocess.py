@@ -26,11 +26,7 @@ class Preprocessor:
     def __comment_clear(self):
         temp = self.__codeText
         # find comment patterns in the code
-        comments = re.findall(r'/{2}.*\n',
-                              temp) + ['second'] + re.findall(r'(?<=[^\"])/\*.*?\*/',
-                                                                           temp, re.DOTALL) + ['third'] + re.findall(r'^/\*.*?\*/',
-                                                                                                                     temp, re.DOTALL) + re.findall(r'/{2}.*$',
-                                                                                                                                                   temp)
+        comments = re.findall(r'/{2}.*\n',temp) + ['second'] + re.findall(r'(?<=[^\"])/\*.*?\*/',temp, re.DOTALL) + ['third'] + re.findall(r'^/\*.*?\*/',temp, re.DOTALL) + re.findall(r'/{2}.*$', temp)
         for comment in comments:
             temp = temp.replace(comment, '')
 
@@ -51,7 +47,7 @@ class Preprocessor:
         for lib in libraries:
             # check, if exist, add them to core keywords.
             if not os.path.exists(library_file_address + lib + '.json'):
-                raise PreprocessError(f'{lib} doesn\'t exist')
+                raise PreprocessError(f'{lib} library doesn\'t exist')
             else:
                 temp = json.load(open(library_file_address + lib + '.json'))
                 keyword_temp += temp['keywords']
